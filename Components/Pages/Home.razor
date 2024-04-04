@@ -1,0 +1,42 @@
+﻿@page "/"
+
+@using BlazorApp.Services
+@using System.Collections.Generic
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+<p>Welcome to your new app.</p>
+
+@foreach (var gif in gifs)
+{
+    <img src="@gif.Media[0].Gif.Url" alt="Gif" />
+}
+
+@code {
+    private List<GifItem> gifs = new List<GifItem>();
+    private MyHttpClient myHttpClient;
+
+    protected override async Task OnInitializedAsync()
+    {
+        myHttpClient = new MyHttpClient(new HttpClient());
+        await GetDataFromApi();
+    }
+
+    private async Task GetDataFromApi()
+    {
+        try
+        {
+            // Realizar la solicitud a la API y deserializar la respuesta
+            gifs = await myHttpClient.GetSomeDataAsync();
+
+            Console.WriteLine(gifs);
+        }
+        catch (Exception ex)
+        {
+            // Manejar cualquier error
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}
